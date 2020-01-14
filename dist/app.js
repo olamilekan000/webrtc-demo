@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var simple_peer_1 = __importDefault(require("simple-peer"));
 var socket_io_client_1 = __importDefault(require("socket.io-client"));
 var PORT = process.env.PORT || 9000;
+console.log(window.location.hostname + ":" + PORT);
 var socket = socket_io_client_1.default.connect(window.location.hostname + ":" + PORT, { reconnect: true });
 var video = document.getElementById('video');
 var getsdp = document.getElementById('getsdp');
