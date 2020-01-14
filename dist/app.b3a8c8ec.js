@@ -15807,125 +15807,121 @@ var socket_io_client_1 = __importDefault(require("socket.io-client"));
 
 var axios_1 = __importDefault(require("axios"));
 
-var PORT;
-
-(function () {
-  axios_1.default.get("/events").then(function (data) {
-    PORT = data.data.port;
+axios_1.default.get("/events").then(function (data) {
+  var PORT = data.data.port;
+  var socket = socket_io_client_1.default.connect(window.location.hostname + ":" + PORT, {
+    reconnect: true
   });
-})();
-
-var socket = socket_io_client_1.default.connect(window.location.hostname + ":" + PORT, {
-  reconnect: true
-});
-var video = document.getElementById('video');
-var getsdp = document.getElementById('getsdp');
-var connect = document.getElementById('connect');
-var createCallConn = document.getElementById('createCallConn');
-var answer = document.getElementById('answerCall');
-var gettheirsdp = document.getElementById('gettheirsdp');
-answer.disabled = true;
-connect.disabled = true;
-createCallConn.disabled = true;
-var videoSream = peerConn;
-var peerConn = peerConn;
-navigator.mediaDevices.getUserMedia({
-  video: true,
-  audio: true
-}).then(function (stream) {
-  // video.srcObject = stream
-  // video.play()
-  // videoSream = stream
-  getStream(stream);
-}).catch(function (err) {
-  console.log(err.name + ': ' + err.message);
-});
-
-var getStream = function getStream(stream) {
-  videoSream = stream;
-};
-
-var vidStreams = function vidStreams() {
-  var peer = new simple_peer_1.default({
-    initiator: location.hash === '#call',
-    stream: videoSream,
-    trickle: false
-  });
-  peerConn = peer;
-  createCallConn.disabled = true;
-  socket.emit('createConnection');
-};
-
-createCallConn.onclick = function () {
-  if (location.hash = '#call') {
-    socket.emit('creatingConnection');
-    return vidStreams();
-  } else {
-    location.hash = '#call';
-  }
-}; // Accept connection from the next user
-
-
-answer.onclick = function (e) {
-  e.preventDefault();
+  var video = document.getElementById('video');
+  var getsdp = document.getElementById('getsdp');
+  var connect = document.getElementById('connect');
+  var createCallConn = document.getElementById('createCallConn');
+  var answer = document.getElementById('answerCall');
+  var gettheirsdp = document.getElementById('gettheirsdp');
   answer.disabled = true;
-  vidStreams();
-  peerConn.signal(JSON.parse(gettheirsdp.value));
-  peerConn.on('stream', function (mediaStream) {
-    console.log(mediaStream);
-    video.srcObject = mediaStream;
-
-    video.onloadedmetadata = function (e) {
-      console.log('loaded', e);
-      video.play();
-    };
-  });
-  socket.emit('acceptConnection');
-  peerConn.on('error', function (err) {
-    return console.log('error', err);
-  });
-};
-
-connect.onclick = function () {
   connect.disabled = true;
-  peerConn.signal(JSON.parse(gettheirsdp.value));
-  peerConn.on('stream', function (mediaStream) {
-    video.srcObject = mediaStream;
-
-    video.onloadedmetadata = function (e) {
-      console.log('loaded', e);
-      video.play();
-    };
-  });
-  socket.emit('connectionAccepted');
-};
-
-socket.on('offer', function (data) {
-  if (data.type == 'answer') {
-    answer.disabled = true;
-  } else {
-    answer.disabled = false;
-  }
-
-  gettheirsdp.value = JSON.stringify(data);
-});
-socket.on('connectionCreated', function () {
-  peerConn.on('signal', function (data) {
-    socket.emit('offer', data);
-    getsdp.value = JSON.stringify(data);
-  });
-});
-socket.on('connectionAccepted', function () {
-  connect.disabled = false;
-});
-socket.on('connectionAcceptedToUsers', function () {
-  answer.disabled = true;
-});
-socket.on('creatingConnectionWithANewUser', function () {
   createCallConn.disabled = true;
-});
-socket.on('connected_to_socket_server', function () {
-  createCallConn.disabled = false;
+  var videoSream = peerConn;
+  var peerConn = peerConn;
+  navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: false
+  }).then(function (stream) {
+    // video.srcObject = stream
+    // video.play()
+    // videoSream = stream
+    getStream(stream);
+  }).catch(function (err) {
+    console.log(err.name + ': ' + err.message);
+  });
+
+  var getStream = function getStream(stream) {
+    videoSream = stream;
+  };
+
+  var vidStreams = function vidStreams() {
+    var peer = new simple_peer_1.default({
+      initiator: location.hash === '#call',
+      stream: videoSream,
+      trickle: false
+    });
+    peerConn = peer;
+    createCallConn.disabled = true;
+    socket.emit('createConnection');
+  };
+
+  createCallConn.onclick = function () {
+    if (location.hash = '#call') {
+      socket.emit('creatingConnection');
+      return vidStreams();
+    } else {
+      location.hash = '#call';
+    }
+  }; // Accept connection from the next user
+
+
+  answer.onclick = function (e) {
+    e.preventDefault();
+    answer.disabled = true;
+    vidStreams();
+    peerConn.signal(JSON.parse(gettheirsdp.value));
+    peerConn.on('stream', function (mediaStream) {
+      console.log(mediaStream);
+      video.srcObject = mediaStream;
+
+      video.onloadedmetadata = function (e) {
+        console.log('loaded', e);
+        video.play();
+      };
+    });
+    socket.emit('acceptConnection');
+    peerConn.on('error', function (err) {
+      return console.log('error', err);
+    });
+  };
+
+  connect.onclick = function () {
+    connect.disabled = true;
+    peerConn.signal(JSON.parse(gettheirsdp.value));
+    peerConn.on('stream', function (mediaStream) {
+      video.srcObject = mediaStream;
+
+      video.onloadedmetadata = function (e) {
+        console.log('loaded', e);
+        video.play();
+      };
+    });
+    socket.emit('connectionAccepted');
+  };
+
+  socket.on('offer', function (data) {
+    if (data.type == 'answer') {
+      answer.disabled = true;
+    } else {
+      answer.disabled = false;
+    }
+
+    gettheirsdp.value = JSON.stringify(data);
+  });
+  socket.on('connectionCreated', function () {
+    peerConn.on('signal', function (data) {
+      socket.emit('offer', data);
+      getsdp.value = JSON.stringify(data);
+    });
+  });
+  socket.on('connectionAccepted', function () {
+    connect.disabled = false;
+  });
+  socket.on('connectionAcceptedToUsers', function () {
+    answer.disabled = true;
+  });
+  socket.on('creatingConnectionWithANewUser', function () {
+    createCallConn.disabled = true;
+  });
+  socket.on('connected_to_socket_server', function () {
+    createCallConn.disabled = false;
+  });
+  console.log(window.location.hostname + ":" + PORT);
 });
 },{"simple-peer":"node_modules/simple-peer/index.js","socket.io-client":"node_modules/socket.io-client/lib/index.js","axios":"node_modules/axios/index.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
