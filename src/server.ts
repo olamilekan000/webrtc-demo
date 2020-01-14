@@ -7,10 +7,11 @@ const path = require('path');
 const app = express();
 console.log(path.join(__dirname, '../dist'));
 
-app.use(express.static(path.join(__dirname, '../dist')));
+app.use(express.static(path.join(__dirname, '../dist'))); \
 
-const server = app.listen(9000, function() {
-  console.log('listening for requests on port 9000,');
+const PORT = process.env.PORT || 9000
+const server = app.listen(PORT, function () {
+  console.log(`listening for requests on port ${PORT} ,`);
 });
 
 const io = socketIo(server);

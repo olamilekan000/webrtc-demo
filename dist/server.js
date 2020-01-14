@@ -5,8 +5,9 @@ var path = require('path');
 var app = express();
 console.log(path.join(__dirname, '../dist'));
 app.use(express.static(path.join(__dirname, '../dist')));
-var server = app.listen(9000, function () {
-    console.log('listening for requests on port 9000,');
+var PORT = process.env.PORT || 9000;
+var server = app.listen(PORT, function () {
+    console.log("listening for requests on port " + PORT + " ,");
 });
 var io = socketIo(server);
 io.on('connection', function (socket) {
