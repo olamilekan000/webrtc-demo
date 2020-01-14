@@ -1,9 +1,18 @@
 
 import Peer from 'simple-peer';
 import io from 'socket.io-client';
+import axios from 'axios'
 
-const PORT = process.env.PORT || 9000;
-console.log(`${window.location.hostname}:${PORT}`)
+let PORT
+
+(() => {
+  axios.get(`/events`)
+    .then((data) => {
+      PORT = data.data.port
+    })
+})()
+
+PORT = process.env.PORT || 9000;
 
 const socket = io.connect(`${window.location.hostname}:${PORT}`, { reconnect: true });
 

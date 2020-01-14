@@ -3,13 +3,22 @@ const express = require('express');
 const socketIo = require('socket.io');
 const http = require('http');
 const path = require('path');
+const bodyParser = require('body-parser')
 
 const app = express();
 console.log(path.join(__dirname, '../dist'));
 
-app.use(express.static(path.join(__dirname, '../dist'))); \
+app.use(bodyParser.json())
+app.use(express.static(path.join(__dirname, '../dist')));
 
 const PORT = process.env.PORT || 9000
+
+app.get('/events', (req, res) => {
+  res.json({
+    port: PORT
+  })
+})
+
 const server = app.listen(PORT, function () {
   console.log(`listening for requests on port ${PORT} ,`);
 });
