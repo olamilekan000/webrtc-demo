@@ -20,7 +20,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "parcel index.html",
     "server:dev": "nodemon ./src/server.ts",
-    "lint": "tslint -p tsconfig.json -c tslint.json --fix"
+    "lint": "tslint -p tsconfig.json -c tslint.json --fix",
+    "start": "node ./dist/server.js"
   },
   "keywords": [],
   "author": "",
