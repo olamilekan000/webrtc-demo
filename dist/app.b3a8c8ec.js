@@ -15815,7 +15815,6 @@ var PORT;
   });
 })();
 
-PORT = undefined || 9000;
 var socket = socket_io_client_1.default.connect(window.location.hostname + ":" + PORT, {
   reconnect: true
 });
@@ -15832,7 +15831,7 @@ var videoSream = peerConn;
 var peerConn = peerConn;
 navigator.mediaDevices.getUserMedia({
   video: true,
-  audio: false
+  audio: true
 }).then(function (stream) {
   // video.srcObject = stream
   // video.play()

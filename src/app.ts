@@ -12,8 +12,6 @@ let PORT
     })
 })()
 
-PORT = process.env.PORT || 9000;
-
 const socket = io.connect(`${window.location.hostname}:${PORT}`, { reconnect: true });
 
 const video = document.getElementById('video');
@@ -33,7 +31,7 @@ let peerConn = peerConn;
 
 navigator.mediaDevices.getUserMedia({
   video: true,
-  audio: false,
+  audio: true,
 }).then((stream) => {
   // video.srcObject = stream
   // video.play()
