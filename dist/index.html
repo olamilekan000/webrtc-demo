@@ -1,36 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  </head>
 
-  <body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+
+<body>
+  <div class="container">
     <div class="container">
-      <div class="container">
-        <video id="video"></video>
-      </div>
-
-      <label>Your Connection ID</label>
-      <input id="getsdp"><br>
-      <label>Their Connection ID</label>
-      <input id="gettheirsdp"><br>
-
-      <button id="connect" class="btn btn-btn waves-effect waves-light">
-        Connect
-      </button>
-      <button id="createCallConn" class="btn btn-btn waves-effect waves-light">
-        Create Call connection
-      </button>
-      <button id="answerCall" class="btn btn-btn waves-effect waves-light">
-        Accept Connection
-      </button>
+      <video id="video"></video>
     </div>
 
-    <script src="/app.b3a8c8ec.js"></script>
-  </body>
+    <label>Your Connection ID</label>
+    <input id="getsdp"><br>
+    <label>Their Connection ID</label>
+    <input id="gettheirsdp"><br>
+
+    <button id="connect" class="btn btn-btn waves-effect waves-light">
+      Connect
+    </button>
+    <button id="createCallConn" class="btn btn-btn waves-effect waves-light">
+      Create Call connection
+    </button>
+    <button id="answerCall" class="btn btn-btn waves-effect waves-light">
+      Accept Connection
+    </button>
+  </div>
+
+  <script src="https://js.pusher.com/5.0/pusher.min.js">
+    Pusher.logToConsole = true;
+    var pusher = new Pusher('480eee46f1a6a10a75f8', {
+      cluster: 'mt1',
+      forceTLS: true
+    });
+    var channel = pusher.subscribe('cob');
+    channel.bind('get-port', function (data) {
+      console.log(data);
+      window.PORT = data;
+    });
+  </script>
+  <script>
+    (function () {
+      if (!navigator.mediaDevices) navigator.mediaDevices = {};
+
+      if (!navigator.mediaDevices.getUserMedia) {
+        var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia ||
+          navigator.getUserMedia;
+
+        if (getUserMedia) {
+          navigator.mediaDevices.getUserMedia = function (constraints) {
+            return new Promise(function (resolve, reject) {
+              getUserMedia(constraints, function (stream) {
+                resolve(stream);
+              }, function (error) {
+                reject(error);
+              });
+            });
+          };
+        } else {
+          navigator.mediaDevices.getUserMedia = function () {
+            return new Promise(function (resolve, reject) {
+              reject('getUserMedia is not supported in this browser.');
+            });
+          };
+        }
+      }
+    })();
+  </script>
+  <script src="./app.b3a8c8ec.js"></script>
+</body>
+
 </html>
