@@ -7,11 +7,11 @@ const options = {
   transports: ['websocket'],
   secure: true,
   rejectUnauthorized: false,
-  reconnect: true
-}
+  reconnect: true,
+};
 
-const PORT = parseInt(localStorage.getItem('PORT'), 10)
-console.log('port ===', PORT)
+const PORT = parseInt(localStorage.getItem('PORT'), 10);
+console.log('port ===', PORT);
 
 const socket = io.connect(`${window.location.hostname}:${PORT}`, { reconnect: true });
 // const socket = io.connect(`http://localhost:${PORT}`, options);
@@ -32,7 +32,7 @@ let videoSream = peerConn;
 let peerConn = peerConn;
 
 if (navigator.getUserMedia) {
-  console.log('yeaa')
+  console.log('yeaa');
 }
 
 navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia ||
@@ -49,7 +49,7 @@ navigator.mediaDevices.getUserMedia({
   getStream(stream);
 
 })
-  .catch(function (err) { console.log(err.name + ': ' + err.message); });
+  .catch(function(err) { console.log(err.name + ': ' + err.message); });
 
 const getStream = (stream) => {
   videoSream = stream;
@@ -79,10 +79,10 @@ answer.onclick = (e) => {
   vidStreams();
   peerConn.signal(JSON.parse(gettheirsdp.value));
 
-  peerConn.on('stream', function (mediaStream) {
+  peerConn.on('stream', function(mediaStream) {
     console.log(mediaStream);
     video.srcObject = mediaStream;
-    video.onloadedmetadata = function (e) {
+    video.onloadedmetadata = function(e) {
       console.log('loaded', e);
       video.play();
     };
@@ -97,9 +97,9 @@ connect.onclick = () => {
   connect.disabled = true;
 
   peerConn.signal(JSON.parse(gettheirsdp.value));
-  peerConn.on('stream', function (mediaStream) {
+  peerConn.on('stream', function(mediaStream) {
     video.srcObject = mediaStream;
-    video.onloadedmetadata = function (e) {
+    video.onloadedmetadata = function(e) {
       console.log('loaded: accepted offer', e);
       video.play();
     };
@@ -139,4 +139,4 @@ socket.on('connected_to_socket_server', () => {
   createCallConn.disabled = false;
 });
 
-console.log(`${window.location.hostname}:${PORT}`)
+console.log(`${window.location.hostname}:${PORT}`);

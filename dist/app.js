@@ -10,7 +10,7 @@ var options = {
     transports: ['websocket'],
     secure: true,
     rejectUnauthorized: false,
-    reconnect: true
+    reconnect: true,
 };
 var PORT = parseInt(localStorage.getItem('PORT'), 10);
 console.log('port ===', PORT);
