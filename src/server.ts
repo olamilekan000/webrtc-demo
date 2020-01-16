@@ -81,4 +81,7 @@ if (!sticky.listen(server, PORT)) {
     });
 
   });
+
+  console.log('sticky sould work')
+
 }

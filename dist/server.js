@@ -50,4 +50,5 @@ else {
             socket.broadcast.emit('creatingConnectionWithANewUser');
         });
     });
+    console.log('sticky sould work');
 }
