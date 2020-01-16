@@ -14248,7 +14248,8 @@ var PORT = parseInt(localStorage.getItem('PORT'), 10);
 console.log('port ===', PORT);
 var socket = socket_io_client_1.default.connect(window.location.hostname + ":" + PORT, {
   reconnect: true
-}); // const socket = io.connect(`http://localhost:${PORT}`, options);
+});
+socket.emit('reset'); // const socket = io.connect(`http://localhost:${PORT}`, options);
 
 var video = document.getElementById('video');
 var getsdp = document.getElementById('getsdp');

@@ -5,6 +5,7 @@ const http = require('http');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const sticky = require('sticky-session');
 
 const app = express();
 
@@ -33,40 +34,51 @@ app.get('/', (req, res) => {
 });
 
 const server = http.createServer(app)
-server.listen(PORT, function () {
-  console.log(`listening for requests on port ${PORT} ,`);
-});
+// server.listen(PORT, function () {
+//   console.log(`listening for requests on port ${PORT} ,`);
+// });
 
-const io = socketIo(server);
-io.set('origins', '*:*');
-
-io.on('connection', (socket) => {
-
-  console.log('made socket connection', socket.id);
-  socket.emit('connected_to_socket_server');
-
-  socket.on('offer', (data) => {
-    socket.broadcast.emit('offer', data);
+if (!sticky.listen(server, PORT)) {
+  // Master code
+  server.once('listening', function () {
+    console.log(`listening for requests on port ${PORT} , = sticky`);
   });
 
-  socket.on('createConnection', (peerConn) => {
-    socket.emit('connectionCreated', peerConn);
-  });
+} else {
+  // Worker code
 
-  socket.on('peer', (peer) => {
-    socket.emit('gotPeerConnection', peer);
-  });
+  const io = socketIo(server);
 
-  socket.on('acceptConnection', () => {
-    socket.broadcast.emit('connectionAccepted');
-  });
+  io.set('origins', '*:*');
 
-  socket.on('connectionAccepted', () => {
-    socket.broadcast.emit('connectionAcceptedToUsers');
-  });
+  io.on('connection', (socket) => {
 
-  socket.on('creatingConnection', () => {
-    socket.broadcast.emit('creatingConnectionWithANewUser');
-  });
+    console.log('made socket connection', socket.id);
+    socket.emit('connected_to_socket_server');
 
-});
+    socket.on('offer', (data) => {
+      socket.broadcast.emit('offer', data);
+    });
+
+    socket.on('createConnection', (peerConn) => {
+      socket.emit('connectionCreated', peerConn);
+    });
+
+    socket.on('peer', (peer) => {
+      socket.emit('gotPeerConnection', peer);
+    });
+
+    socket.on('acceptConnection', () => {
+      socket.broadcast.emit('connectionAccepted');
+    });
+
+    socket.on('connectionAccepted', () => {
+      socket.broadcast.emit('connectionAcceptedToUsers');
+    });
+
+    socket.on('creatingConnection', () => {
+      socket.broadcast.emit('creatingConnectionWithANewUser');
+    });
+
+  });
+}
